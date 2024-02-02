@@ -9,49 +9,42 @@
   </style>
 </head>
 <body>
-  <canvas id="gameMap" width="500" height="400"></canvas>
+  <canvas id="gameMap"></canvas>
 
   <script>
-    // Get the canvas element
     const canvas = document.getElementById('gameMap');
     const ctx = canvas.getContext('2d');
 
-    // Set initial position of the character
+    // Make canvas responsive
+    canvas.width = 500;
+    canvas.height = 400;
+
     let characterX = 200;
     let characterY = 150;
 
-    // Define obstacle positions
     const obstacles = [
       { x: 50, y: 50, width: 100, height: 100 },
       { x: 300, y: 200, width: 50, height: 150 }
     ];
 
-    // Draw the game map
     function drawMap() {
-      // Clear the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw the background
       ctx.fillStyle = 'lightgray';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw obstacles or landmarks
       ctx.fillStyle = 'darkgreen';
       obstacles.forEach(obstacle => {
         ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
       });
 
-      // Draw player or character
       ctx.fillStyle = 'blue';
       ctx.beginPath();
-      ctx.arc(characterX, characterY, 10, 0, 2 * Math.PI);
+      ctx.arc(characterX, characterY, 10, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    // Check for collision between character and obstacles
     function checkCollision() {
-      for (let i = 0; i < obstacles.length; i++) {
-        const obstacle = obstacles[i];
+      for (const obstacle of obstacles) {
         if (
           characterX > obstacle.x &&
           characterX < obstacle.x + obstacle.width &&
@@ -59,43 +52,24 @@
           characterY < obstacle.y + obstacle.height
         ) {
           alert('Collision detected!');
-          break;
+          return; // Exit the function after finding a collision
         }
       }
     }
 
-    // Move the character based on keyboard input
     function moveCharacter(event) {
-      const keyCode = event.keyCode;
-
-      // Move character up
-      if (keyCode === 38) {
-        characterY -= 10;
-      }
-      // Move character down
-      else if (keyCode === 40) {
-        characterY += 10;
-      }
-      // Move character left
-      else if (keyCode === 37) {
-        characterX -= 10;
-      }
-      // Move character right
-      else if (keyCode === 39) {
-        characterX += 10;
+      switch (event.key) {
+        case 'ArrowUp': characterY -= 10; break;
+        case 'ArrowDown': characterY += 10; break;
+        case 'ArrowLeft': characterX -= 10; break;
+        case 'ArrowRight': characterX += 10; break;
       }
 
-      // Check for collision after character movement
       checkCollision();
-
-      // Redraw the map after character movement
       drawMap();
     }
 
-    // Call the drawMap function to display the initial game map
     drawMap();
-
-    // Add event listener for keyboard input
     document.addEventListener('keydown', moveCharacter);
   </script>
 </body>
