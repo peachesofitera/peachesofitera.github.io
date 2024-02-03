@@ -1,102 +1,147 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Game Map</title>
-  <style>
-    canvas {
-      border: 1px solid black;
-    }
-  </style>
-</head>
-<body>
-  <canvas id="gameMap" width="500" height="400"></canvas>
 
-  <script>
-    // Get the canvas element
-    const canvas = document.getElementById('gameMap');
-    const ctx = canvas.getContext('2d');
+<canvas id="gameMap"></canvas>
+<img id="characterImage" src="peach.png" style="display: none">
 
-    // Set initial position of the character
-    let characterX = 200;
-    let characterY = 150;
+<img id="obstacle1" src="BowserKillQuiz.png" style="display: none">
+<img id="obstacle2" src="HangMario.png" style="display: none">
+<img id="obstacle3" src="HammerBroHead2Head.png" style="display: none">
+<img id="obstacle4" src="PeachesFlight.png" style="display: none">
 
-    // Define obstacle positions
-    const obstacles = [
-      { x: 50, y: 50, width: 100, height: 100 },
-      { x: 300, y: 200, width: 50, height: 150 }
-    ];
+<!-- Add buttons for character movement -->
+<div class="button-container d-flex">
+  <button class="button" id="leftButton">L</button>
+  <div>
+    <button class="button" id="upButton">U</button>
+    <br />
+    <button class="button" id="downButton">D</button>  
+  </div>
+  <button class="button" id="rightButton">R</button>
+</div>
 
-    // Draw the game map
-    function drawMap() {
-      // Clear the canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw the background
-      ctx.fillStyle = 'lightgray';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+<script>
+// Get the canvas element
+const canvas = document.getElementById('gameMap');
+const ctx = canvas.getContext('2d');
 
-      // Draw obstacles or landmarks
-      ctx.fillStyle = 'darkgreen';
-      obstacles.forEach(obstacle => {
-        ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-      });
+// Set initial position of the character
+let characterX = 200;
+let characterY = 150;
 
-      // Draw player or character
-      ctx.fillStyle = 'blue';
-      ctx.beginPath();
-      ctx.arc(characterX, characterY, 10, 0, 2 * Math.PI);
-      ctx.fill();
-    }
+// Define obstacle positions
+const obstacles = [
+  { x: 50, y: 50, width: 100, height: 100, url: 'https://apps.powerapps.com/play/e/fff7b563-7fd6-ea72-97be-dbd13fa8fe1c/a/9c59f9a5-b5b8-4461-a4b8-be65d0567d04?tenantId=850d3648-f5bb-431f-9b52-63096f9eb862&hint=af746bd2-ed66-479a-9c35-8e195c2afeb6&source=sharebutton&sourcetime=1706962050141' },
+  { x: 0, y: 300, width: 50, height: 150, url: 'https://apps.powerapps.com/play/e/default-850d3648-f5bb-431f-9b52-63096f9eb862/a/3f3a3933-6b4b-4199-9ce9-7357cb523fb0?tenantId=850d3648-f5bb-431f-9b52-63096f9eb862&hint=f8042bd5-2de8-4b06-968e-f3c176bb7845&skipMobileRedirect=1&source=sharebutton&sourcetime=1706962075406' },
+  { x: 100, y: 100, width: 50, height: 150, url: 'https://apps.powerapps.com/play/e/fff7b563-7fd6-ea72-97be-dbd13fa8fe1c/a/551ee318-4dea-4eac-bf82-67cecc45f917?tenantId=850d3648-f5bb-431f-9b52-63096f9eb862&hint=db2f8a0f-1d07-45f6-a36b-540d9fb13897&source=sharebutton&sourcetime=1706962032088' },
+  { x: 300, y: 300, width: 50, height: 150, url: 'https://apps.powerapps.com/play/e/fff7b563-7fd6-ea72-97be-dbd13fa8fe1c/a/3481226e-13e0-4317-a6de-def430627250?tenantId=850d3648-f5bb-431f-9b52-63096f9eb862&hint=1b412ba7-97d8-4e03-aa2f-f95ca48c5ebe&skipMobileRedirect=1&source=sharebutton&sourcetime=1706961997953' }
+];
 
-    // Check for collision between character and obstacles
-    function checkCollision() {
-      for (let i = 0; i < obstacles.length; i++) {
-        const obstacle = obstacles[i];
-        if (
-          characterX > obstacle.x &&
-          characterX < obstacle.x + obstacle.width &&
-          characterY > obstacle.y &&
-          characterY < obstacle.y + obstacle.height
-        ) {
-          alert('Collision detected!');
-          break;
-        }
-      }
-    }
+function resizeCanvas() {
+  canvas.width = window.innerWidth - 100;
+  canvas.height = window.innerHeight - 400;
+  drawMap();
+}
 
-    // Move the character based on keyboard input
-    function moveCharacter(event) {
-      const keyCode = event.keyCode;
+// Draw the game map
+function drawMap() {
+  // Clear the canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Move character up
-      if (keyCode === 38) {
-        characterY -= 10;
-      }
-      // Move character down
-      else if (keyCode === 40) {
-        characterY += 10;
-      }
-      // Move character left
-      else if (keyCode === 37) {
-        characterX -= 10;
-      }
-      // Move character right
-      else if (keyCode === 39) {
-        characterX += 10;
-      }
+  // Draw the transparent background
+  ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Check for collision after character movement
-      checkCollision();
 
-      // Redraw the map after character movement
-      drawMap();
-    }
+ // Draw obstacles or landmarks
+  obstacles.forEach(obstacle => {
+    // Draw neon border
+    ctx.strokeStyle = 'rgba(255, 0, 234, 0.8)';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(
+      obstacle.x * canvas.width / 500,
+      obstacle.y * canvas.height / 400,
+      obstacle.width * canvas.width / 500,
+      obstacle.height * canvas.height / 400
+    );
+    
+    // Draw filled color
+    ctx.fillStyle = '#Ff00ea';
+    ctx.fillRect(
+      obstacle.x * canvas.width / 500,
+      obstacle.y * canvas.height / 400,
+      obstacle.width * canvas.width / 500,
+      obstacle.height * canvas.height / 400
+    );
+  });
+    
+   // Draw player or character image
+  const characterImage = document.getElementById('characterImage');
+  ctx.drawImage(
+    characterImage,
+    characterX * canvas.width / 500 - characterImage.width / 2,
+    characterY * canvas.height / 400 - characterImage.height / 2
+  );
 
-    // Call the drawMap function to display the initial game map
-    drawMap();
+ 
+  ctx.fill();
+}
 
-    // Add event listener for keyboard input
-    document.addEventListener('keydown', moveCharacter);
-  </script>
-</body>
-</html>
+// Check for collision between character and obstacles
+function checkCollision() {
+for (let i = 0; i < obstacles.length; i++) {
+const obstacle = obstacles[i];
+if (
+  characterX > obstacle.x &&
+  characterX < obstacle.x + obstacle.width &&
+  characterY > obstacle.y &&
+  characterY < obstacle.y + obstacle.height
+) {
+  // Open a new tab with the obstacle's URL
+  window.open(obstacle.url, '_blank');
+  break;
+}
+}
+}
+
+// Move the character based on button clicks
+function moveCharacter(direction) {
+  // Move character up
+  if (direction === 'up') {
+    characterY -= 10;
+  }
+  // Move character down
+  else if (direction === 'down') {
+    characterY += 10;
+  }
+  // Move character left
+  else if (direction === 'left') {
+    characterX -= 10;
+  }
+  // Move character right
+  else if (direction === 'right') {
+    characterX += 10;
+  }
+
+  // Check for collision after character movement
+  checkCollision();
+
+  // Redraw the map after character movement
+  drawMap();
+}
+
+// Attach event handlers to button clicks
+const upButton = document.getElementById('upButton');
+const downButton = document.getElementById('downButton');
+const leftButton = document.getElementById('leftButton');
+const rightButton = document.getElementById('rightButton');
+
+upButton.addEventListener('click', () => moveCharacter('up'));
+downButton.addEventListener('click', () => moveCharacter('down'));
+leftButton.addEventListener('click', () => moveCharacter('left'));
+rightButton.addEventListener('click', () => moveCharacter('right'));
+
+window.addEventListener('resize', () => resizeCanvas());
+
+// Resize the canvas initially
+resizeCanvas();
+</script>
